@@ -1,7 +1,6 @@
 package com.pks.spring_sms_backend.config;
 
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +16,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 
 @Configuration
 @EnableWebSecurity
@@ -25,8 +26,11 @@ public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
 
-    public SecurityConfig(UserDetailsService userDetailsService) {
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    public SecurityConfig(UserDetailsService userDetailsService, JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.userDetailsService = userDetailsService;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
 
@@ -39,18 +43,36 @@ public class SecurityConfig {
                         request->request
                                 .requestMatchers("register","login").permitAll()
                                 .anyRequest().authenticated()
-                )
-                .httpBasic(Customizer.withDefaults());
+                )//authenticate all request
+                //.formLogin(Customizer.withDefaults()) //use form login
+                .httpBasic(Customizer.withDefaults())//use basic login
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
 
     }
 
+
+//    public UserDetailsService userDetailsService(){
+//        UserDetails jide = User
+//                .withUsername("jide")
+//                        .password("{noop}password")
+//                                .roles("USER")
+//                                        .build();
+//        UserDetails nikky = User
+//                .withUsername("nikky")
+//                .password("password")
+//                .roles("ADMIN")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(jide,nikky);
+//    }
 
 
     @Bean
     public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider provider =
                 new DaoAuthenticationProvider();
+        // provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
         provider.setPasswordEncoder(passwordEncoder());
         provider.setUserDetailsService(userDetailsService);
         return provider;

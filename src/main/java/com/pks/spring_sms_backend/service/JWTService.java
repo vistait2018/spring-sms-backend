@@ -31,7 +31,7 @@ public class JWTService {
                 .subject(loginModel.getEmail())
                 .issuer("PGS")
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis()+10*60*1000))
+                .expiration(new Date(System.currentTimeMillis()+100*60*1000))
                 .and()
                 .signWith(generateKey())
                 .compact();

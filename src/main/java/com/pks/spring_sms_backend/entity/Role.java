@@ -40,14 +40,6 @@ public class Role {
 
     private LocalDateTime dateUpdated;
 
-    @ManyToMany(
-            mappedBy = "roles"
-    )
-    private List<User> users ;
 
-    public void addUser(User user) {
-        if(users == null) users = new ArrayList<>();
-        users.add(user);
-    }
 
 }
