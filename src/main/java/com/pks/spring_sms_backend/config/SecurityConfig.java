@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -34,18 +35,25 @@ public class SecurityConfig {
     }
 
 
+
     @Bean
     public SecurityFilterChain securityFilterChain(
-            HttpSecurity http) throws Exception {
+            HttpSecurity http, CustomAuthenticationEntryPoint entryPoint) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)// TO DISABLE csrf->csrf.disabled or Customizer.withDefaults()
                 .authorizeHttpRequests(
                         request->request
-                                .requestMatchers("register","login").permitAll()
+                                .requestMatchers("/api/auth/register","/api/auth/login").permitAll()
+
+                              //  .requestMatchers("/api/admin/user**").hasAnyAuthority("ROLE_USER", "ROLE_TEACHER")
+                               // .requestMatchers("/api/user/**").hasAuthority("ROLE_USER")
+                               // .requestMatchers("/api/teacher/**").hasAuthority("ROLE_TEACHER")
                                 .anyRequest().authenticated()
                 )//authenticate all request
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(entryPoint))
                 //.formLogin(Customizer.withDefaults()) //use form login
-                .httpBasic(Customizer.withDefaults())//use basic login
+               // .httpBasic(Customizer.withDefaults())//use basic login
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
 

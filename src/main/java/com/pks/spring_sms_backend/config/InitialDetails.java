@@ -39,13 +39,13 @@ public class InitialDetails implements CommandLineRunner {
         if (roleRepository.count() == 0) {
             List<Role> roles = List.of(
 
-                    Role.builder().roleName("admin").dateCreated(LocalDateTime.now()).build(),
-                    Role.builder().roleName("teacher").dateCreated(LocalDateTime.now()).build(),
-                    Role.builder().roleName("class-teacher").dateCreated(LocalDateTime.now()).build(),
-                    Role.builder().roleName("account").dateCreated(LocalDateTime.now()).build(),
-                    Role.builder().roleName("user").dateCreated(LocalDateTime.now()).build(),
-                    Role.builder().roleName("guardian").dateCreated(LocalDateTime.now()).build(),
-                    Role.builder().roleName("student").dateCreated(LocalDateTime.now()).build()
+                    Role.builder().roleName("ROLE_ADMIN").dateCreated(LocalDateTime.now()).build(),
+                    Role.builder().roleName("ROLe_TEACHER").dateCreated(LocalDateTime.now()).build(),
+                    Role.builder().roleName("ROLE_LASS_TEACHER").dateCreated(LocalDateTime.now()).build(),
+                    Role.builder().roleName("ROLE_ACCOUNT").dateCreated(LocalDateTime.now()).build(),
+                    Role.builder().roleName("ROLE_USER").dateCreated(LocalDateTime.now()).build(),
+                    Role.builder().roleName("ROLE_GUARDIAN").dateCreated(LocalDateTime.now()).build(),
+                    Role.builder().roleName("ROLE_STUDENT").dateCreated(LocalDateTime.now()).build()
             );
             roleRepository.saveAll(roles);
             log.info("Saved Roles "+ roles);
@@ -66,7 +66,7 @@ public class InitialDetails implements CommandLineRunner {
                     .build();
 
             // Add role only if it exists
-            superAdmin.addRole( Role.builder().roleName("super-admin").dateCreated(LocalDateTime.now()).build());
+            superAdmin.addRole( Role.builder().roleName("ROLE_SUPER_ADMIN").dateCreated(LocalDateTime.now()).build());
             userRepository.save(superAdmin);
         }
     }
